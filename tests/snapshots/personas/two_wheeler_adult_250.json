@@ -1,0 +1,61 @@
+{
+  "aqi_band": "Poor",
+  "summary": "Current air quality in Jaipur is Poor (AQI 250). Prioritize protective indoor safeguards and low-emission choices.",
+  "routine": [
+    {
+      "action": "Wear a well-fitted N95 or FFP2 respirator outdoors",
+      "why": "AQI is 250 (Poor). Standard cloth or surgical masks do not filter fine PM2.5 aerosols.",
+      "impact": "Roughly 95% fine particle filtration efficiency when fitted with a tight perimeter seal (NIOSH/CPCB test basis)."
+    },
+    {
+      "action": "Shift all aerobic exercise and active play strictly indoors",
+      "why": "Deep breathing during outdoor exertion increases particulate deposition in sensitive lungs by 3 to 5 times, especially risky for children and seniors.",
+      "impact": "Roughly 60% to 80% reduction in total inhaled aerosol volume compared to exercising outdoors (aerosol medicine study basis)."
+    },
+    {
+      "action": "Conduct hydration and saline nasal rinses after outdoor exposure",
+      "why": "Particulates dry out the nasal mucosa and irritate upper respiratory passages during winter smog.",
+      "impact": "Roughly 20% to 30% reduction in mucosal irritation and particulate carriage in upper nasal passages (ENT clinical basis)."
+    },
+    {
+      "action": "Adjust commute departure away from peak morning inversion (avoid 7:00 AM - 9:30 AM)",
+      "why": "Surface-level pollutant concentrations peak during morning rush hour combined with cold winter boundary layer compression.",
+      "impact": "About 20% to 35% lower commuter exposure to direct tailpipe carbon monoxide and black carbon (urban transit exposure basis)."
+    }
+  ],
+  "indoor": [
+    {
+      "action": "Deploy multi-room True HEPA purifiers with activated carbon filters and seal perimeter gaps",
+      "why": "Activated carbon adsorbs volatile organic compounds (VOCs) and smog odor, while HEPA eliminates particulate matter across the residence.",
+      "impact": "About 85% to 92% reduction in overall indoor PM2.5 and gaseous co-pollutant levels (multi-stage filtration benchmark basis)."
+    },
+    {
+      "action": "Keep windows and balcony doors sealed; place rolled damp towels along drafty door thresholds",
+      "why": "Hazardous outdoor air rapidly infiltrates homes through window cracks and doorway gaps during stagnant winter inversions.",
+      "impact": "Roughly 40% to 60% reduction in outdoor-to-indoor particulate infiltration rate (building envelope research basis)."
+    },
+    {
+      "action": "Strictly avoid incense (agarbatti), mosquito coils, and scented candles indoors",
+      "why": "Burning one mosquito coil or incense stick generates fine particulate concentrations equivalent to several tens of cigarettes in an unventilated room.",
+      "impact": "Avoids adding roughly 100 to 250 µg/m³ of internal PM2.5 load into living spaces (combustion emissions study basis)."
+    }
+  ],
+  "swaps": [
+    {
+      "action": "Operate kitchen exhaust fan continuously and cook with tight-fitting lids on burners",
+      "why": "Gas combustion releases nitrogen dioxide (NO2) and ultrafine particles that exacerbate bronchial hyper-reactivity.",
+      "impact": "About 35% to 55% reduction in indoor peak NO2 and aerosol peaks during active boiling/frying (kitchen ventilation study basis)."
+    },
+    {
+      "action": "Shift to metro transit or covered bus; if two-wheeler is unavoidable, wear a sealed N95 under full-face helmet",
+      "why": "Two-wheeler riders are directly immersed in the vehicular exhaust plume at tailpipe height without any cabin buffer.",
+      "impact": "Roughly 85% reduction in direct inhaled exhaust particles when combining closed visor and sealed N95 (commuter exposure study basis)."
+    },
+    {
+      "action": "Compost or bag organic garden/kitchen waste; strictly avoid burning dry leaves or trash",
+      "why": "Open biomass burning produces dense polycyclic aromatic hydrocarbons (PAHs) and toxic smoke at ground level during stagnant winter nights.",
+      "impact": "Avoids releasing roughly 15 to 30 grams of pure fine particulate matter per small pile burned (CPCB emission inventory basis)."
+    }
+  ],
+  "used_ai": false
+}

@@ -1,0 +1,61 @@
+{
+  "aqi_band": "Moderate",
+  "summary": "Current air quality in Pune is Moderate (AQI 120). Prioritize protective indoor safeguards and low-emission choices.",
+  "routine": [
+    {
+      "action": "Keep standard respiratory protection handy for traffic corridors",
+      "why": "AQI is 120 (Moderate). Local roadway exhaust can still spike particulate exposure during commutes.",
+      "impact": "About 30% to 50% particulate reduction for transient roadside exhaust exposures (occupational safety basis)."
+    },
+    {
+      "action": "Schedule outdoor physical activities between 1:00 PM and 4:00 PM",
+      "why": "Winter temperature inversions trap heavy smog near ground level in early mornings and late evenings; midday sun promotes dispersion.",
+      "impact": "About 25% to 40% lower ambient PM2.5 exposure compared to early morning hours (CPCB diurnal curve basis)."
+    },
+    {
+      "action": "Conduct hydration and saline nasal rinses after outdoor exposure",
+      "why": "Particulates dry out the nasal mucosa and irritate upper respiratory passages during winter smog.",
+      "impact": "Roughly 20% to 30% reduction in mucosal irritation and particulate carriage in upper nasal passages (ENT clinical basis)."
+    },
+    {
+      "action": "Cluster any outdoor essential errands into a single midday outing",
+      "why": "Working from home minimizes transit exposure; combining errands during peak sunlight hours prevents unnecessary smog exposure.",
+      "impact": "Roughly 40% reduction in daily personal exposure compared to multiple separate trips during peak smog hours (exposure model basis)."
+    }
+  ],
+  "indoor": [
+    {
+      "action": "Run a mid-capacity True HEPA air purifier continuously in the primary bedroom",
+      "why": "True HEPA captures sub-micron combustion particles without producing secondary ozone. Sleeping in clean air aids lung recovery.",
+      "impact": "Roughly 75% to 85% reduction in bedroom PM2.5 concentrations in a closed room (standard CADR test basis)."
+    },
+    {
+      "action": "Ventilate briefly for 15-20 minutes only during afternoon hours (1:00 PM - 3:00 PM)",
+      "why": "Allows indoor carbon dioxide flush while avoiding high morning and late evening outdoor smog spikes.",
+      "impact": "About 30% reduction in indoor CO2 buildup without substantial outdoor PM ingress (controlled natural ventilation basis)."
+    },
+    {
+      "action": "Strictly avoid incense (agarbatti), mosquito coils, and scented candles indoors",
+      "why": "Burning one mosquito coil or incense stick generates fine particulate concentrations equivalent to several tens of cigarettes in an unventilated room.",
+      "impact": "Avoids adding roughly 100 to 250 µg/m³ of internal PM2.5 load into living spaces (combustion emissions study basis)."
+    }
+  ],
+  "swaps": [
+    {
+      "action": "Maintain electric induction cooking and clean cooktop surface regularly",
+      "why": "Induction cooking emits zero in-situ combustion exhaust (no carbon monoxide or nitrogen dioxide emissions).",
+      "impact": "Zero direct combustion byproduct generation inside the residence (appliance emission benchmark basis)."
+    },
+    {
+      "action": "Maintain remote work schedule and replace localized courier deliveries with consolidated neighborhood orders",
+      "why": "Eliminates individual commute emissions while reducing delivery vehicle trips in the community.",
+      "impact": "About 2 to 4 kg CO2 avoided per avoided daily urban trip (urban mobility baseline basis)."
+    },
+    {
+      "action": "Compost or bag organic garden/kitchen waste; strictly avoid burning dry leaves or trash",
+      "why": "Open biomass burning produces dense polycyclic aromatic hydrocarbons (PAHs) and toxic smoke at ground level during stagnant winter nights.",
+      "impact": "Avoids releasing roughly 15 to 30 grams of pure fine particulate matter per small pile burned (CPCB emission inventory basis)."
+    }
+  ],
+  "used_ai": false
+}

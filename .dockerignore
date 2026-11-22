@@ -1,0 +1,39 @@
+# VCS and local environment
+.git
+.github
+.venv
+venv
+env
+.env
+.env.*
+!.env.example
+
+# Tests and development tooling are not part of the runtime image
+tests
+docs
+scripts
+requirements-dev.txt
+pyproject.toml
+pytest.ini
+Makefile
+package.json
+package-lock.json
+node_modules
+
+# Python caches and generated reports
+__pycache__
+*.py[cod]
+.pytest_cache
+.hypothesis
+.ruff_cache
+.mypy_cache
+.coverage
+coverage.xml
+htmlcov
+*.log
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea
+.vscode

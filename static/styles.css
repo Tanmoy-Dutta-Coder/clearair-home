@@ -1,0 +1,870 @@
+/* ==========================================================================
+   ClearAir Home — Earth & Air Palette Stylesheet
+   Extracted from the Master Color Swatch:
+     --c-bg:     #F3F6F4 (Clean Pale Mist / Light Sage Off-White)
+     --c-olive:  #7E8E36 (Meadow Olive / Accent & Chips)
+     --c-forest: #5B6E28 (Deep Forest Olive / Primary Brand & Headings)
+     --c-orange: #FF5A1C (Vibrant Tangerine Coral / Highlight & Alerts)
+   WCAG 2.2 AA Compliant (Text >= 4.5:1, UI Elements >= 3:1)
+   ========================================================================== */
+
+/* Design Tokens & Palette */
+:root {
+  /* Core Swatch Colors */
+  --c-bg:          #F3F6F4;  /* Top stripe: Crisp pale mist background */
+  --c-olive:       #7E8E36;  /* 2nd stripe: Meadow olive */
+  --c-forest:      #5B6E28;  /* 3rd stripe: Deep forest olive */
+  --c-orange:      #FF5A1C;  /* 4th stripe: Vibrant tangerine coral */
+
+  /* Surface & Semantic Roles */
+  --c-surface:     #FFFFFF;  /* Card surface */
+  --c-ink:         #141C0C;  /* Deep charcoal olive text (16.07:1 on --c-bg) */
+  --c-muted:       #4E5F2D;  /* Secondary text (6.44:1 on --c-bg) */
+
+  /* Functional mappings */
+  --c-primary:     var(--c-forest);
+  --c-accent:      var(--c-olive);
+  --c-highlight:   var(--c-orange);
+
+  --c-border:       #5B6E28;  /* 5.67:1 on white (well above 3:1 requirement) */
+  --c-border-light: rgba(91, 110, 40, 0.22);
+  --c-hero-end:     #E5ECE2;
+
+  /* Focus indicator */
+  --focus-ring:    var(--c-ink);
+  --focus-outer:   var(--c-orange);
+
+  /* Stepped AQI Band Scale */
+  --c-good-bg:      #3E6822;  /* Forest green (white text: 6.2:1) */
+  --c-sat-bg:       #5B6E28;  /* Deep olive (white text: 5.67:1) */
+  --c-mod-bg:       #7E8E36;  /* Meadow olive (dark text: 4.84:1) */
+  --c-poor-bg:      #D96E14;  /* Amber bronze (dark text: 5.1:1) */
+  --c-vpoor-bg:     #FF5A1C;  /* Tangerine coral (dark text: 5.60:1) */
+  --c-severe-bg:    #822416;  /* Deep crimson (white text: 7.2:1) */
+
+  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  --transition-speed: 150ms;
+
+  /* Header & Button Defaults */
+  --header-bg:        var(--c-forest);
+  --header-text:      #FFFFFF;
+  --btn-primary-bg:   var(--c-forest);
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-hover:#47571F;
+}
+
+/* Dark Mode Tokens (prefers-color-scheme: dark) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-bg:      #0F150B;
+    --c-surface: #172012;
+    --c-ink:     #F3F6F4;
+    --c-muted:   #BAC9A3;
+
+    --c-forest:  #9AB345;  /* Headings adapt to bright meadow for 9.8:1 contrast */
+    --c-olive:   #889C3A;
+    --c-orange:  #FF733E;
+
+    --c-border:       #BAC9A3;
+    --c-border-light: rgba(186, 201, 163, 0.28);
+    --c-hero-end:     #212D1A;
+
+    --header-bg:      #1F2B18;
+    --header-text:    #F3F6F4;
+
+    --btn-primary-bg:   #889C3A;
+    --btn-primary-text: #0F150B;
+    --btn-primary-hover:#9AB345;
+  }
+
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-stack);
+  background-color: var(--c-bg);
+  color: var(--c-ink);
+  line-height: 1.6;
+  font-size: 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Skip link for keyboard accessibility */
+.skip-link {
+  position: absolute;
+  top: -70px;
+  left: 16px;
+  background: var(--c-forest);
+  color: #FFFFFF;
+  padding: 12px 20px;
+  z-index: 1000;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 6px;
+  border: 2px solid var(--c-orange);
+  transition: top var(--transition-speed) ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid var(--c-ink);
+  box-shadow: 0 0 0 2px var(--c-orange);
+}
+
+/* Focus Indicator: 3px solid ink with 2px outer coral/orange ring */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.chip-input:focus-visible + .chip-label {
+  outline: 3px solid var(--focus-ring) !important;
+  box-shadow: 0 0 0 2px var(--focus-outer) !important;
+  outline-offset: 2px;
+}
+
+.container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Header: Forest olive background with thin tangerine bottom border */
+.site-header {
+  background-color: var(--header-bg);
+  border-bottom: 4px solid var(--c-orange);
+  padding: 24px 0;
+  margin-bottom: 24px;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  font-size: 1.8rem;
+}
+
+h1 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  color: var(--header-text);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  font-size: 1.05rem;
+  color: var(--header-text);
+  font-weight: 500;
+}
+
+/* Headings & Links */
+h2, h3, h4 {
+  color: var(--c-forest);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+a {
+  color: var(--c-forest);
+  text-decoration: underline;
+}
+
+/* Cards */
+.card {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border-light);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(20, 28, 12, 0.05);
+}
+
+/* Hero / Intro Card: Subtle mist gradient */
+.intro-card {
+  background: linear-gradient(135deg, var(--c-bg) 0%, var(--c-hero-end) 100%);
+  border: 1px solid var(--c-border-light);
+}
+
+.card-title {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+}
+
+/* Form Card */
+.form-card {
+  border: 1px solid var(--c-border-light);
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .form-row-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label, legend {
+  font-weight: 700;
+  color: var(--c-ink);
+  font-size: 0.95rem;
+}
+
+.required {
+  color: var(--c-orange);
+}
+
+.field-help {
+  font-size: 0.85rem;
+  color: var(--c-muted);
+}
+
+.privacy-note {
+  font-size: 0.82rem;
+  color: var(--c-muted);
+  margin-top: 4px;
+}
+
+/* Inputs & Selects: >= 3:1 non-text contrast against surface */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1.5px solid var(--c-border);
+  border-radius: 8px;
+  background-color: var(--c-surface);
+  color: var(--c-ink);
+  transition: border-color var(--transition-speed) ease;
+}
+
+/* Input + Action Buttons row */
+.input-with-button {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .input-with-button {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .input-with-button input {
+    flex: 1.5;
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 22px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+/* Primary Button: Forest olive background, white text */
+.btn-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  width: 100%;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--btn-primary-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Secondary & Action Buttons */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--c-forest);
+  border: 2px solid var(--c-forest);
+  font-size: 0.92rem;
+  padding: 8px 16px;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--c-olive);
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.location-btn, .detect-btn {
+  white-space: nowrap;
+  font-size: 0.9rem;
+  gap: 6px;
+}
+
+/* Presets: outlined style, selected state filled olive with ink text */
+.preset-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.preset-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--c-muted);
+}
+
+.preset-btn {
+  background-color: var(--c-surface);
+  border: 1.5px solid var(--c-forest);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c-forest);
+  cursor: pointer;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  transition: all var(--transition-speed) ease;
+}
+
+.preset-btn:hover {
+  background-color: var(--c-olive);
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+}
+
+.preset-btn.selected {
+  background-color: var(--c-olive);
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+  font-weight: 700;
+}
+
+/* Health Factor Checkboxes: Styled as Pill Chips */
+.fieldset-group {
+  border: 1.5px solid var(--c-border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.chips-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+@media (min-width: 600px) {
+  .chips-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.chip-item {
+  position: relative;
+}
+
+.chip-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.chip-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--c-border);
+  border-radius: 22px;
+  background-color: var(--c-surface);
+  color: var(--c-ink);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.chip-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-ink);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: transparent;
+  flex-shrink: 0;
+  transition: all var(--transition-speed) ease;
+}
+
+/* Selected Chip: --c-olive background, --c-ink text, visible checkmark */
+.chip-input:checked + .chip-label {
+  background-color: var(--c-olive);
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+}
+
+.chip-input:checked + .chip-label .chip-check {
+  background-color: var(--c-ink);
+  color: var(--c-olive);
+  border-color: var(--c-ink);
+}
+
+/* Auto-detect Status Messages:
+   Info: Pale mist card with forest olive left border
+   Error: Pale mist card with tangerine coral left border */
+.detection-feedback {
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  border-radius: 4px;
+  background-color: var(--c-bg);
+  border-left: 4px solid var(--c-forest);
+  color: var(--c-ink);
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.detection-feedback.error {
+  border-left-color: var(--c-orange);
+  background-color: #FFF2ED;
+}
+
+/* Error Alert Box */
+.alert-box {
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.error-alert {
+  background-color: #FFF2ED;
+  border: 1.5px solid var(--c-orange);
+  color: var(--c-ink);
+  border-left: 5px solid var(--c-orange);
+  font-weight: 600;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Results Section */
+.results-card {
+  border: 1px solid var(--c-border-light);
+}
+
+.results-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--c-border-light);
+  padding-bottom: 12px;
+}
+
+.results-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+/* AI Status Pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.pill-ai {
+  background-color: var(--c-olive);
+  color: var(--c-ink);
+  border: 1px solid var(--c-ink);
+}
+
+.pill-deterministic {
+  background-color: var(--c-bg);
+  color: var(--c-ink);
+  border: 1px solid var(--c-border);
+}
+
+/* AQI Band Banner */
+.aqi-summary-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var(--c-bg);
+  border: 1.5px solid var(--c-border-light);
+  margin-bottom: 24px;
+}
+
+@media (min-width: 600px) {
+  .aqi-summary-banner {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.aqi-badge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1.5px solid var(--c-ink);
+}
+
+.aqi-num-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+  opacity: 0.9;
+}
+
+.aqi-num {
+  font-size: 2.3rem;
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+.aqi-band-name {
+  font-size: 1rem;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 800;
+}
+
+.aqi-summary-text p {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--c-ink);
+  font-weight: 500;
+}
+
+/* Stepped AQI Band Scale */
+.band-good {
+  background-color: var(--c-good-bg);
+  color: #FFFFFF;
+}
+
+.band-satisfactory {
+  background-color: var(--c-sat-bg);
+  color: #FFFFFF;
+}
+
+.band-moderate {
+  background-color: var(--c-mod-bg);
+  color: var(--c-ink);
+}
+
+.band-poor {
+  background-color: var(--c-poor-bg);
+  color: var(--c-ink);
+}
+
+.band-very-poor {
+  background-color: var(--c-vpoor-bg);
+  color: var(--c-ink);
+}
+
+.band-severe {
+  background-color: var(--c-severe-bg);
+  color: #FFFFFF;
+}
+
+/* Three Results Section Cards with Palette Left Borders:
+   1. Routine: Tangerine Coral (#FF5A1C)
+   2. Indoor IAQ: Meadow Olive (#7E8E36)
+   3. Sustainable Swaps: Deep Forest Olive (#5B6E28) */
+.section-routine {
+  border-left: 6px solid var(--c-orange);
+}
+
+.section-indoor {
+  border-left: 6px solid var(--c-olive);
+}
+
+.section-swaps {
+  border-left: 6px solid var(--c-forest);
+}
+
+.plan-section {
+  padding: 18px;
+  border-radius: 8px;
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border-light);
+  margin-bottom: 22px;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* Action Item Cards */
+.action-card {
+  border: 1.5px solid var(--c-border-light);
+  border-radius: 8px;
+  padding: 16px;
+  background-color: var(--c-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--c-forest);
+}
+
+.action-card p {
+  font-size: 0.95rem;
+  color: var(--c-ink);
+}
+
+/* Impact Container & Labelled Tier Badges:
+   - High impact (forest olive with white text or meadow olive with dark text)
+   - Medium impact (meadow olive with dark text)
+   - Low impact (tangerine coral with dark text) */
+.impact-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background-color: var(--c-bg);
+  border: 1px solid var(--c-border-light);
+  margin-top: 4px;
+}
+
+.impact-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.impact-tier-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--c-ink);
+}
+
+.tier-high {
+  background-color: var(--c-forest);
+  color: #FFFFFF;
+}
+
+.tier-medium {
+  background-color: var(--c-olive);
+  color: var(--c-ink);
+}
+
+.tier-low {
+  background-color: var(--c-orange);
+  color: var(--c-ink);
+}
+
+.impact-detail {
+  font-size: 0.9rem;
+  color: var(--c-ink);
+  font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+  .band-moderate,
+  .band-poor,
+  .band-very-poor,
+  .tier-high,
+  .tier-medium,
+  .tier-low {
+    color: #0F150B;
+  }
+
+  .preset-btn:hover,
+  .preset-btn.selected,
+  .chip-input:checked + .chip-label {
+    color: #0F150B;
+  }
+
+  .chip-input:checked + .chip-label .chip-check {
+    background-color: #0F150B;
+    color: #889C3A;
+    border-color: #0F150B;
+  }
+}
+
+/* Disclaimer Callout */
+.disclaimer-callout {
+  background-color: var(--c-bg);
+  border: 1px solid var(--c-border-light);
+  border-left: 4px solid var(--c-forest);
+  border-radius: 6px;
+  padding: 14px;
+  margin-top: 24px;
+  font-size: 0.88rem;
+  color: var(--c-muted);
+  line-height: 1.45;
+}
+
+/* Footer */
+.site-footer {
+  margin-top: auto;
+  background-color: var(--c-surface);
+  border-top: 2px solid var(--c-border-light);
+  padding: 24px 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--c-muted);
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-subtext {
+  font-size: 0.82rem;
+}
+
+/* Reduced Motion (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print Friendly Styles (@media print) */
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 11pt;
+  }
+
+  .skip-link,
+  .site-header,
+  .intro-card,
+  .form-card,
+  .print-action,
+  .site-footer {
+    display: none !important;
+  }
+
+  .card, .plan-section, .action-card {
+    border: 1px solid #222222 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+
+  .section-routine { border-left: 5px solid #000000 !important; }
+  .section-indoor  { border-left: 5px solid #000000 !important; }
+  .section-swaps   { border-left: 5px solid #000000 !important; }
+
+  .impact-container {
+    background-color: #F0F0F0 !important;
+    border: 1px solid #444444 !important;
+  }
+
+  .impact-tier-badge {
+    background-color: transparent !important;
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+  }
+
+  .disclaimer-callout {
+    display: block !important;
+    border: 1px solid #000000 !important;
+    page-break-inside: avoid;
+  }
+}

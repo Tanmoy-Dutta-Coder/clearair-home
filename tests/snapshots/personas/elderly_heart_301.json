@@ -1,0 +1,61 @@
+{
+  "aqi_band": "Very Poor",
+  "summary": "Current air quality in Delhi is Very Poor (AQI 301). Household has high-risk age groups (children/elderly), and 1 sensitive health condition(s). Prioritize protective indoor safeguards and low-emission choices.",
+  "routine": [
+    {
+      "action": "Wear a well-fitted N95 or FFP2 respirator outdoors",
+      "why": "AQI is 301 (Very Poor). Standard cloth or surgical masks do not filter fine PM2.5 aerosols.",
+      "impact": "Roughly 95% fine particle filtration efficiency when fitted with a tight perimeter seal (NIOSH/CPCB test basis)."
+    },
+    {
+      "action": "Shift all aerobic exercise and active play strictly indoors",
+      "why": "Deep breathing during outdoor exertion increases particulate deposition in sensitive lungs by 3 to 5 times, especially risky for children and seniors.",
+      "impact": "Roughly 60% to 80% reduction in total inhaled aerosol volume compared to exercising outdoors (aerosol medicine study basis)."
+    },
+    {
+      "action": "Prepare emergency medical kit, rescue inhalers, and symptom checklist",
+      "why": "Identified elevated risk (heart). Smog triggers rapid bronchial spasms and cardiovascular stress.",
+      "impact": "About 50% reduction in severe asthma attack escalation when rescue medication is initiated at earliest symptom onset (clinical asthma guidelines basis)."
+    },
+    {
+      "action": "Adjust commute departure away from peak morning inversion (avoid 7:00 AM - 9:30 AM)",
+      "why": "Surface-level pollutant concentrations peak during morning rush hour combined with cold winter boundary layer compression.",
+      "impact": "About 20% to 35% lower commuter exposure to direct tailpipe carbon monoxide and black carbon (urban transit exposure basis)."
+    }
+  ],
+  "indoor": [
+    {
+      "action": "Run a mid-capacity True HEPA air purifier continuously in the primary bedroom",
+      "why": "True HEPA captures sub-micron combustion particles without producing secondary ozone. Sleeping in clean air aids lung recovery.",
+      "impact": "Roughly 75% to 85% reduction in bedroom PM2.5 concentrations in a closed room (standard CADR test basis)."
+    },
+    {
+      "action": "Keep windows and balcony doors sealed; place rolled damp towels along drafty door thresholds",
+      "why": "Hazardous outdoor air rapidly infiltrates homes through window cracks and doorway gaps during stagnant winter inversions.",
+      "impact": "Roughly 40% to 60% reduction in outdoor-to-indoor particulate infiltration rate (building envelope research basis)."
+    },
+    {
+      "action": "Strictly avoid incense (agarbatti), mosquito coils, and scented candles indoors",
+      "why": "Burning one mosquito coil or incense stick generates fine particulate concentrations equivalent to several tens of cigarettes in an unventilated room.",
+      "impact": "Avoids adding roughly 100 to 250 µg/m³ of internal PM2.5 load into living spaces (combustion emissions study basis)."
+    }
+  ],
+  "swaps": [
+    {
+      "action": "Operate kitchen exhaust fan continuously and cook with tight-fitting lids on burners",
+      "why": "Gas combustion releases nitrogen dioxide (NO2) and ultrafine particles that exacerbate bronchial hyper-reactivity.",
+      "impact": "About 35% to 55% reduction in indoor peak NO2 and aerosol peaks during active boiling/frying (kitchen ventilation study basis)."
+    },
+    {
+      "action": "Shift to metro rail transit or set vehicle AC to 100% recirculation mode with a cabin PM2.5 filter",
+      "why": "Metro transit removes you from surface exhaust corridors; cabin recirculation blocks highway particulate ingress.",
+      "impact": "Roughly 70% reduction in in-cabin particle exposure and about 2 kg CO2 avoided per transit trip (transportation research basis)."
+    },
+    {
+      "action": "Compost or bag organic garden/kitchen waste; strictly avoid burning dry leaves or trash",
+      "why": "Open biomass burning produces dense polycyclic aromatic hydrocarbons (PAHs) and toxic smoke at ground level during stagnant winter nights.",
+      "impact": "Avoids releasing roughly 15 to 30 grams of pure fine particulate matter per small pile burned (CPCB emission inventory basis)."
+    }
+  ],
+  "used_ai": false
+}

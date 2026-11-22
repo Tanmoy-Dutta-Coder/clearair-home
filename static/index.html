@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ClearAir Home - Adaptive winter smog and urban air pollution guidance tailored to your household and lifestyle.">
+  <title>ClearAir Home | Smog & Air Quality Protection</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <!-- Accessibility: Skip to main content link for keyboard & screen reader users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <div class="container header-container">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🍃</span>
+        <h1>ClearAir Home</h1>
+      </div>
+      <p class="tagline">Personalized winter smog routines, indoor hacks, and low-emission choices.</p>
+    </div>
+  </header>
+
+  <main id="main-content" class="container" role="main" tabindex="-1">
+    <!-- Intro Card -->
+    <section class="card intro-card" aria-labelledby="intro-heading">
+      <h2 id="intro-heading" class="card-title">Navigate Winter Smog Safely</h2>
+      <p>
+        Get a tailored, science-backed daily protection plan based on your local air quality,
+        household vulnerability, commute mode, and budget. Our deterministic core calculates proven safeguards,
+        and Google Gemini personalizes explanations for your lifestyle.
+      </p>
+    </section>
+
+    <!-- Context Intake Form -->
+    <section class="card form-card" aria-labelledby="form-heading">
+      <h2 id="form-heading" class="card-title">Household & Environmental Profile</h2>
+
+      <!-- Form Error Alert Banner -->
+      <div id="form-errors" class="alert-box error-alert hidden" role="alert" aria-live="assertive" tabindex="-1"></div>
+
+      <form id="plan-form" novalidate aria-describedby="form-errors">
+        <div class="form-grid">
+          <!-- Location, Auto-detection & Presets -->
+          <div class="form-group">
+            <label for="location">Location / City <span class="required" aria-hidden="true">*</span></label>
+            <div class="input-with-button">
+              <input type="text" id="location" name="location" required maxlength="80" placeholder="e.g. Anand Vihar, Delhi NCR" autocomplete="address-level2">
+              <button type="button" id="detect-aqi-btn" class="btn btn-secondary detect-btn">Detect AQI for this area</button>
+              <button type="button" id="use-location-btn" class="btn btn-secondary location-btn hidden">
+                <span class="location-icon" aria-hidden="true">📍</span> Use my current location
+              </button>
+            </div>
+            <p class="privacy-note" id="location-privacy-note"><small>Your location is used once to fetch air quality and is not stored.</small></p>
+            <p class="field-help" id="location-help">Enter your city, neighborhood, or region (max 80 characters).</p>
+            
+            <!-- Live Detection Status Announcement -->
+            <div id="detection-status" class="detection-feedback hidden" aria-live="polite"></div>
+
+            <!-- Regional Quick Presets -->
+            <div class="preset-group" role="group" aria-label="Quick Regional Presets">
+              <span class="preset-label">Presets:</span>
+              <button type="button" class="preset-btn" data-location="Delhi NCR" data-aqi="385">Delhi NCR (Severe 385)</button>
+              <button type="button" class="preset-btn" data-location="Kolkata" data-aqi="265">Kolkata (Poor 265)</button>
+              <button type="button" class="preset-btn" data-location="Kanpur" data-aqi="320">Kanpur (Very Poor 320)</button>
+              <button type="button" class="preset-btn" data-location="Urban City" data-aqi="160">Moderate Smog (160)</button>
+            </div>
+          </div>
+
+          <!-- Air Quality Index (AQI) -->
+          <div class="form-group">
+            <label for="aqi">Indian Air Quality Index (AQI: 0 to 500) <span class="required" aria-hidden="true">*</span></label>
+            <input type="number" id="aqi" name="aqi" min="0" max="500" required placeholder="e.g. 320" aria-describedby="aqi-help">
+            <p class="field-help" id="aqi-help">Enter an Indian CPCB AQI value between 0 (Good) and 500 (Severe). Auto-detected values can be edited manually anytime.</p>
+          </div>
+
+          <!-- 2 Column Row: Household & Commute -->
+          <div class="form-row-2col">
+            <!-- Household Composition -->
+            <div class="form-group">
+              <label for="household">Household Demographics <span class="required" aria-hidden="true">*</span></label>
+              <select id="household" name="household" required>
+                <option value="adults">Adults only (General population)</option>
+                <option value="young_children">Young children present (under 5 years)</option>
+                <option value="elderly">Elderly members present (60+ years)</option>
+                <option value="children_and_elderly">Both young children and elderly present</option>
+              </select>
+            </div>
+
+            <!-- Commute Mode -->
+            <div class="form-group">
+              <label for="commute">Primary Commute Mode <span class="required" aria-hidden="true">*</span></label>
+              <select id="commute" name="commute" required>
+                <option value="car">Private Car</option>
+                <option value="two_wheeler">Motorcycle / Scooter / Two-Wheeler</option>
+                <option value="public_transport">Metro / Bus / Public Transit</option>
+                <option value="walk_cycle">Walking or Cycling</option>
+                <option value="work_from_home">Work from Home / Remote</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Health & Vulnerability Factors (Pill Chips) -->
+          <fieldset class="form-group fieldset-group">
+            <legend>Health & Vulnerability Conditions (Select all that apply)</legend>
+            <div class="checkbox-grid chips-grid">
+              <div class="chip-item">
+                <input type="checkbox" id="health-asthma" name="health_factors" value="asthma" class="chip-input">
+                <label for="health-asthma" class="chip-label">
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                  <span>Asthma or chronic respiratory condition</span>
+                </label>
+              </div>
+              <div class="chip-item">
+                <input type="checkbox" id="health-heart" name="health_factors" value="heart" class="chip-input">
+                <label for="health-heart" class="chip-label">
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                  <span>Cardiovascular / heart condition</span>
+                </label>
+              </div>
+              <div class="chip-item">
+                <input type="checkbox" id="health-pregnancy" name="health_factors" value="pregnancy" class="chip-input">
+                <label for="health-pregnancy" class="chip-label">
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                  <span>Pregnancy</span>
+                </label>
+              </div>
+              <div class="chip-item">
+                <input type="checkbox" id="health-outdoor" name="health_factors" value="outdoor_work" class="chip-input">
+                <label for="health-outdoor" class="chip-label">
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                  <span>Outdoor laborer / high-exposure transit worker</span>
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- 2 Column Row: Cooking Fuel & Budget -->
+          <div class="form-row-2col">
+            <!-- Cooking Fuel -->
+            <div class="form-group">
+              <label for="cooking_fuel">Primary Cooking Fuel <span class="required" aria-hidden="true">*</span></label>
+              <select id="cooking_fuel" name="cooking_fuel" required>
+                <option value="lpg">LPG Cylinder</option>
+                <option value="piped_gas">Piped Natural Gas (PNG)</option>
+                <option value="induction">Electric Induction / Clean Electric</option>
+                <option value="biomass">Biomass / Firewood / Chulha</option>
+              </select>
+            </div>
+
+            <!-- Budget Tier -->
+            <div class="form-group">
+              <label for="budget">Budget Tier for Interventions <span class="required" aria-hidden="true">*</span></label>
+              <select id="budget" name="budget" required>
+                <option value="very_low">Very Low (Low-cost DIY hacks, seals, behavior changes)</option>
+                <option value="moderate">Moderate (Standard HEPA filters, sealed masks)</option>
+                <option value="flexible">Flexible (Multi-room HEPA purifiers, HVAC upgrades)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="submit" id="submit-btn" class="btn btn-primary">Generate Protection Plan</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Plan Results Region -->
+    <section id="results-section" class="card results-card hidden" aria-live="polite" tabindex="-1">
+      <div class="results-header">
+        <h2 id="results-heading" tabindex="-1">Your Air Quality Action Plan</h2>
+        <button type="button" id="print-btn" class="btn btn-secondary print-action" onclick="window.print()">Print / Save Plan</button>
+      </div>
+
+      <!-- AI Status Badge / Pill -->
+      <div id="ai-status-pill" class="status-pill" role="status"></div>
+
+      <!-- AQI Band & Summary Banner -->
+      <div class="aqi-summary-banner" id="aqi-banner">
+        <div class="aqi-badge-container">
+          <span class="aqi-num-label">AQI Level</span>
+          <span class="aqi-num" id="result-aqi-val">--</span>
+          <span class="aqi-band-name" id="result-aqi-band">--</span>
+        </div>
+        <div class="aqi-summary-text">
+          <p id="result-summary">Loading plan summary...</p>
+        </div>
+      </div>
+
+      <!-- Section 1: Daily Routine & Exposure Timing (Coral Border) -->
+      <section class="plan-section section-routine" aria-labelledby="routine-heading">
+        <h3 id="routine-heading" class="section-title">
+          <span aria-hidden="true">⏱️</span> 1. Daily Routine & Exposure Timing
+        </h3>
+        <div id="routine-cards" class="cards-grid"></div>
+      </section>
+
+      <!-- Section 2: Indoor Air Quality & Ventilation Hacks (Orange Border) -->
+      <section class="plan-section section-indoor" aria-labelledby="indoor-heading">
+        <h3 id="indoor-heading" class="section-title">
+          <span aria-hidden="true">🏠</span> 2. Indoor Air Quality & Ventilation Hacks
+        </h3>
+        <div id="indoor-cards" class="cards-grid"></div>
+      </section>
+
+      <!-- Section 3: Sustainable Swaps & Daily Alternatives (Amber Border) -->
+      <section class="plan-section section-swaps" aria-labelledby="swaps-heading">
+        <h3 id="swaps-heading" class="section-title">
+          <span aria-hidden="true">🌱</span> 3. Sustainable Swaps & Daily Alternatives
+        </h3>
+        <div id="swaps-cards" class="cards-grid"></div>
+      </section>
+
+      <!-- Disclaimer & Methodology Callout -->
+      <aside class="disclaimer-callout" role="note" aria-label="Medical and Estimation Disclaimer">
+        <p><strong>Note:</strong> All impact figures are honest approximations based on published aerosol, building science, and transportation studies. They are educational estimates, not clinical guarantees or medical advice. Consult a healthcare provider for medical concerns.</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container footer-container">
+      <p>ClearAir Home &bull; Built for the Google PromptWars Challenge.</p>
+      <p class="footer-subtext">Deterministic decision engine paired with Google Gemini personalization. Completely accessible and responsive.</p>
+    </div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

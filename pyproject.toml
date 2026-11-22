@@ -1,0 +1,41 @@
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = [
+  "unit: isolated unit tests",
+  "integration: tests spanning application components",
+  "api: HTTP API and contract tests",
+  "e2e: browser-driven user journeys",
+  "security: security and input-hardening checks",
+  "performance: load and benchmark checks",
+  "accessibility: accessibility checks",
+  "property: property-based and fuzz tests",
+  "fault: fault-injection and resilience checks",
+  "smoke: fast deployment smoke checks",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+omit = ["app/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 90
+
+[tool.mypy]
+strict = true
+files = ["app"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
