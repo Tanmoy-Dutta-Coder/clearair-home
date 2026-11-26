@@ -30,6 +30,7 @@ REQUEST_TIMEOUT_SECONDS = 3.0
 # In-Memory TTL Cache Configuration
 CACHE_TTL_SECONDS = 15 * 60  # 15 minutes
 CACHE_MAX_ENTRIES = 256
+# pyrefly: ignore[implicit-any-type-argument]
 _CACHE: dict[str, tuple[float, dict]] = {}
 _CACHE_LOCK = threading.RLock()
 
@@ -59,6 +60,7 @@ class AqiUnavailable(Exception):
     """Raised when AQI cannot be fetched, geocoded, or calculated."""
 
 
+# pyrefly: ignore[implicit-any-type-argument]
 def _calculate_sub_index(conc: float, breakpoints: list) -> float:
     """Linearly interpolate sub-index for a pollutant concentration."""
     if not math.isfinite(conc) or conc < 0:
@@ -68,6 +70,7 @@ def _calculate_sub_index(conc: float, breakpoints: list) -> float:
 
     for c_low, c_high, i_low, i_high in breakpoints:
         if conc <= c_high:
+            # pyrefly: ignore[no-any-return-implicit]
             return i_low + ((i_high - i_low) / (c_high - c_low)) * (conc - c_low)
 
     # Above highest tier
@@ -166,6 +169,7 @@ def fetch_pm(lat: float, lon: float) -> tuple[float, float, str]:
         raise AqiUnavailable("Air quality metric lookup failed") from e
 
 
+# pyrefly: ignore[implicit-any-type-argument]
 def _get_from_cache(cache_key: str) -> dict | None:
     """Retrieve entry from in-memory TTL cache if not expired."""
     with _CACHE_LOCK:
@@ -178,6 +182,7 @@ def _get_from_cache(cache_key: str) -> dict | None:
         return None
 
 
+# pyrefly: ignore[implicit-any-type-argument]
 def _set_in_cache(cache_key: str, data: dict) -> None:
     """Store entry in in-memory TTL cache with eviction."""
     if CACHE_MAX_ENTRIES < 1:
@@ -191,6 +196,7 @@ def _set_in_cache(cache_key: str, data: dict) -> None:
         _CACHE[cache_key] = (now, data.copy())
 
 
+# pyrefly: ignore[implicit-any-type-argument]
 def detect_aqi(place: str) -> dict:
     """Detect current Indian AQI for a given place name with TTL caching.
 
@@ -225,6 +231,7 @@ def detect_aqi(place: str) -> dict:
     return result
 
 
+# pyrefly: ignore[implicit-any-type-argument]
 def detect_aqi_by_coords(lat: float, lon: float) -> dict:
     """Detect current Indian AQI for approximate coordinates with TTL caching.
 

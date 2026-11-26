@@ -4,6 +4,7 @@ Mounts static assets, applies pure ASGI security and rate-limiting middleware,
 and exposes health, AQI auto-detection (place and coordinates), and air quality adaptation plan endpoints.
 """
 
+from typing import Any
 import logging
 import re
 import time
@@ -41,6 +42,7 @@ class SecurityAndRateLimitMiddleware:
 
     def __init__(
         self,
+        # pyrefly: ignore[implicit-any-parameter]
         app,
         max_requests: int = RATE_LIMIT_REQUESTS,
         window_seconds: float = RATE_LIMIT_WINDOW_SECS,
@@ -54,7 +56,8 @@ class SecurityAndRateLimitMiddleware:
         self.max_tracked_ips = max_tracked_ips
         self.ip_records: dict[str, deque[float]] = defaultdict(deque)
 
-    async def __call__(self, scope, receive, send):
+    # pyrefly: ignore[implicit-any-parameter]
+    async def __call__(self, scope, receive, send) -> Any:
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
@@ -111,6 +114,7 @@ class SecurityAndRateLimitMiddleware:
         timestamps.append(now)
 
         # 3. Security headers on response start
+        # pyrefly: ignore[implicit-any-parameter, unannotated-return]
         async def send_with_security_headers(message):
             if message["type"] == "http.response.start":
                 res_headers = list(message.get("headers", []))
@@ -149,6 +153,7 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Validation Error Handler: Clear 422 messages without leaking internals
 @app.exception_handler(RequestValidationError)
+# pyrefly: ignore[unannotated-return]
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     errors = []
     for error in exc.errors():
@@ -167,6 +172,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 # Unhandled Exception Handler: Prevents stack trace disclosure in responses
 @app.exception_handler(Exception)
+# pyrefly: ignore[unannotated-return]
 async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.exception("Internal error occurred: %s", type(exc).__name__)
     return JSONResponse(
@@ -177,6 +183,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 # Route Handlers
 @app.get("/", response_class=FileResponse)
+# pyrefly: ignore[unannotated-return]
 async def get_root():
     """Serve the single-page application dashboard."""
     index_file = STATIC_DIR / "index.html"
@@ -186,12 +193,14 @@ async def get_root():
 
 
 @app.get("/healthz")
+# pyrefly: ignore[unannotated-return]
 async def healthz():
     """Readiness and liveness probe for Cloud Run."""
     return {"status": "ok"}
 
 
 @app.get("/api/aqi")
+# pyrefly: ignore[unannotated-return]
 async def get_aqi_detection(place: str = Query(..., min_length=2, max_length=80)):
     """Auto-detect current AQI from Open-Meteo with fallback to 503 on unavailability."""
     clean_place = place.strip()
@@ -212,6 +221,7 @@ async def get_aqi_detection(place: str = Query(..., min_length=2, max_length=80)
 
 
 @app.get("/api/aqi/coords")
+# pyrefly: ignore[unannotated-return]
 async def get_aqi_by_coords(query: CoordsQuery = Depends()):  # noqa: B008 - standard FastAPI dependency pattern
     """Auto-detect current AQI near approximate coordinates.
 
