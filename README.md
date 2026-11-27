@@ -1,5 +1,7 @@
 # ClearAir Home
 
+Live demo: <add after deploy>
+
 ClearAir Home is a household air-quality planning tool for people navigating high particulate pollution and winter smog in Indian cities.
 
 ## Chosen vertical and persona
@@ -86,6 +88,50 @@ make coverage
 ```
 
 Browser tests require Playwright and its Chromium browser. See [docs/TESTING.md](docs/TESTING.md) for installation and test-group details. Tests must mock Gemini and Open-Meteo; they should not require real API credentials or network services.
+
+## Deploy to Render
+
+ClearAir Home includes a declarative [render.yaml](render.yaml) Blueprint configured for Render's Docker runtime in the Singapore region (closest to users in South Asia).
+
+### Step-by-Step Deployment
+
+1. **Push to GitHub**: Ensure all changes are committed and pushed to your public GitHub repository on branch `main`.
+2. **Open Render Dashboard**: Go to [dashboard.render.com](https://dashboard.render.com) and click **New +** > **Blueprint** (or **Web Service**).
+3. **Connect Repository**: Select and authorize your `clearair-home` repository.
+4. **Confirm Blueprint**: Render reads `render.yaml` automatically, creating the `clearair-home` web service with the `free` plan and `singapore` region.
+5. **Set Environment Variables**: When prompted in the dashboard, enter your `GEMINI_API_KEY` (configured with `sync: false`, never committed). If you omit the key, the service starts safely in deterministic fallback mode.
+6. **Wait for Deployment**: Render builds the Docker image and performs the `/healthz` health check.
+7. **Verify Live Service**: Run the smoke test script against your live Render URL:
+   ```bash
+   python scripts/smoke_remote.py https://clearair-home.onrender.com
+   ```
+
+### Local Docker Testing
+
+You can build and test the production Docker image locally before deploying:
+
+```bash
+# 1. Build the Docker container image
+docker build -t clearair-home .
+
+# 2. Run container locally (listening on port 10000)
+docker run -d -p 10000:10000 -e PORT=10000 --name clearair-test clearair-home
+
+# 3. Run the smoke test against the local container
+python scripts/smoke_remote.py http://localhost:10000
+
+# 4. Stop and clean up container
+docker stop clearair-test && docker rm clearair-test
+```
+
+### Troubleshooting
+
+- **Port binding error**: Render assigns a dynamic port via the `$PORT` environment variable. The Dockerfile binds uvicorn to `0.0.0.0:${PORT:-10000}`. Binding to a hardcoded port or `127.0.0.1` will cause Render port detection to fail.
+- **Health check failing**: Render polls `/healthz` to verify deployment health. Ensure the container starts within the timeout and returns HTTP 200 `{"status": "ok"}`.
+- **Missing env var**: If `GEMINI_API_KEY` is not provided, the app continues to operate normally in deterministic baseline mode (`used_ai: false`). To enable AI personalization, add the key in Render Dashboard > Environment.
+- **Cold start on Free Tier**: Render free-tier services spin down after 15 minutes of inactivity. The first incoming request triggers a container restart that can take 30–60 seconds. The frontend displays an active wake-up notice ("Waking up the server, this can take up to a minute..."). This is a hosting tier limit, not an application bug.
+- **CSP blocking requests**: The Content Security Policy (`default-src 'self'`) strictly restricts scripts, stylesheets, and connects to the same origin. External CDNs, unlisted fonts, and third-party trackers are rejected.
+- **Rate limiter seeing one IP**: Behind Render's reverse proxy, requests arrive from internal proxy addresses. Uvicorn must be started with `--proxy-headers --forwarded-allow-ips="*"` so the ASGI rate limiter receives each user's real client IP from `X-Forwarded-For`.
 
 ## Deployment to Google Cloud Run
 

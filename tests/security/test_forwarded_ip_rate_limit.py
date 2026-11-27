@@ -44,3 +44,28 @@ def test_rate_limit_cannot_be_bypassed_by_changing_forwarded_ip():
 
     pytest.importorskip("anyio")
     asyncio.run(run())
+
+
+def test_rate_limit_separates_different_forwarded_ips_behind_trusted_proxy():
+    """Verify that when behind a trusted proxy (e.g. Render reverse proxy), different client IPs get separate limits."""
+
+    async def run():
+        async def unused_app(scope, receive, send):
+            await send({"type": "http.response.start", "status": 200, "headers": []})
+            await send({"type": "http.response.body", "body": b"ok"})
+
+        # Behind trusted proxy (explicit IP or wildcard)
+        middleware = SecurityAndRateLimitMiddleware(
+            unused_app, max_requests=1, trusted_proxy_ips=frozenset({"192.0.2.10"})
+        )
+        # Client 1 gets first request permitted
+        assert await _request(middleware, "198.51.100.1") == 200
+        # Client 2 gets first request permitted (distinct rate limit bucket)
+        assert await _request(middleware, "203.0.113.2") == 200
+        # Client 1 subsequent request is rate limited (429)
+        assert await _request(middleware, "198.51.100.1") == 429
+        # Client 2 subsequent request is rate limited (429)
+        assert await _request(middleware, "203.0.113.2") == 429
+
+    pytest.importorskip("anyio")
+    asyncio.run(run())

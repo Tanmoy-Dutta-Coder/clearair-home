@@ -32,6 +32,34 @@ flowchart TD
 
 The browser also has two optional AQI detection paths: a place-name request to `GET /api/aqi`, and a coordinate request to `GET /api/aqi/coords`. These use the AQI provider and Open-Meteo; manual AQI entry does not depend on either route.
 
+## Deployment architecture (Render & Cloud Run)
+
+The container is platform-agnostic and runs with standard container runtimes (Render, Google Cloud Run, local Docker).
+
+```mermaid
+flowchart LR
+    Client([User Browser]) -->|HTTPS :443| Edge[Render Edge / TLS Termination]
+    Edge -->|X-Forwarded-For| Proxy[Render Reverse Proxy]
+    Proxy -->|HTTP :10000| Docker[Docker Container<br/>python:3.12-slim]
+    
+    subgraph Container Execution
+        Docker --> Uvicorn[Uvicorn Server<br/>--proxy-headers<br/>--forwarded-allow-ips=*]
+        Uvicorn --> ASGI[SecurityAndRateLimitMiddleware<br/>Extracts Real Client IP]
+        ASGI --> App[FastAPI Application]
+        App --> Rules[Deterministic Rules Engine]
+        App -.->|Optional API Call| Gemini[Google Gemini API]
+        App -.->|Optional AQI Call| OpenMeteo[Open-Meteo API]
+    end
+```
+
+### Render Deployment
+- **Runtime**: Docker using repo `Dockerfile`.
+- **Region**: Singapore (`singapore`), minimizing latency for South Asian users navigating winter smog.
+- **Port Handling**: Uvicorn binds to `0.0.0.0:${PORT:-10000}`.
+- **Proxy Headers**: `--proxy-headers --forwarded-allow-ips="*"` ensures client IP is extracted from `X-Forwarded-For`, preventing all users from sharing a single proxy rate limit.
+- **Health Checks**: Render polls `/healthz` to confirm readiness.
+- **Cold Starts**: Render free tier spins down after 15 minutes of inactivity; the frontend UI shows an active wake-up notice if requests take > 5 seconds.
+
 ## Components
 
 - **Browser (`static/`)**: collects user context, submits same-origin requests, and renders plan fields as text.

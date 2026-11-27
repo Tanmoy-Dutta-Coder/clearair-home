@@ -1,0 +1,31 @@
+services:
+  # Web service definition for the ClearAir Home application
+  - type: web
+    # Unique name for the service within the Render account
+    name: clearair-home
+    # Docker runtime using the repository Dockerfile
+    runtime: docker
+    # Hosting plan tier: free (to upgrade, change to starter, standard, or pro)
+    plan: free
+    # Geographic region closest to target users in South Asia (India)
+    region: singapore
+    # Git branch deployed by Render
+    branch: main
+    # Automatically deploy changes on every push to the specified branch
+    autoDeploy: true
+    # HTTP endpoint polled by Render health check during deployment before serving traffic
+    healthCheckPath: /healthz
+    # Environment variables configured on the service
+    envVars:
+      # Secret Google Gemini API key: sync is false so it is entered in the Render dashboard and never committed
+      - key: GEMINI_API_KEY
+        sync: false
+      # Model identifier used for AI plan personalization
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      # Timeout in seconds for upstream Gemini API requests before falling back to deterministic baseline
+      - key: LLM_TIMEOUT_SECONDS
+        value: "5.0"
+      # Maximum token budget for Gemini AI response generation
+      - key: MAX_OUTPUT_TOKENS
+        value: "2048"

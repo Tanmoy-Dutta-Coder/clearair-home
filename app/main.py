@@ -4,12 +4,13 @@ Mounts static assets, applies pure ASGI security and rate-limiting middleware,
 and exposes health, AQI auto-detection (place and coordinates), and air quality adaptation plan endpoints.
 """
 
-from typing import Any
 import logging
 import re
 import time
 from collections import defaultdict, deque
+from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
@@ -17,13 +18,19 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.aqi_provider import AqiUnavailable, detect_aqi, detect_aqi_by_coords
+from app.config import settings
 from app.llm import personalise_plan
 from app.rules import build_plan
 from app.schemas import CoordsQuery, PlanRequest, PlanResponse
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+APP_VERSION = "1.0.0"
+
+# Structured one-line logging format to stdout
+logging.basicConfig(
+    level=logging.INFO,
+    format='{"time": "%(asctime)s", "level": "%(levelname)s", "logger": "%(name)s", "message": "%(message)s"}',
+)
+logger = logging.getLogger("clearair")
 
 # Base directories
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,7 +94,7 @@ class SecurityAndRateLimitMiddleware:
         client = scope.get("client")
         direct_ip = client[0] if client else "127.0.0.1"
         x_forwarded_for = headers.get(b"x-forwarded-for")
-        if x_forwarded_for and direct_ip in self.trusted_proxy_ips:
+        if x_forwarded_for and (direct_ip in self.trusted_proxy_ips or "*" in self.trusted_proxy_ips):
             client_ip = x_forwarded_for.decode("latin1").split(",")[0].strip()
         else:
             client_ip = direct_ip
@@ -136,15 +143,28 @@ class SecurityAndRateLimitMiddleware:
         await self.app(scope, receive, send_with_security_headers)
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifecycle manager logging startup status without sensitive data."""
+    ai_enabled = bool(settings.gemini_api_key and settings.gemini_api_key.strip())
+    logger.info("Application startup: version=%s ai_enabled=%s", APP_VERSION, ai_enabled)
+    yield
+
+
 # Initialize FastAPI app (CORS closed by default; same-origin only)
 app = FastAPI(
     title="clearair-home",
     description="Adaptive winter smog and air quality guidance for households",
-    version="1.0.0",
+    version=APP_VERSION,
+    lifespan=lifespan,
 )
 
 # Attach security & rate-limiting middleware (pure ASGI)
-app.add_middleware(SecurityAndRateLimitMiddleware)
+# By default in container/proxy environments (Render, Cloud Run), trust loopback and wildcard
+app.add_middleware(
+    SecurityAndRateLimitMiddleware,
+    trusted_proxy_ips=frozenset({"127.0.0.1", "::1", "*"}),
+)
 
 # Mount static directory for JS and CSS assets
 STATIC_DIR.mkdir(parents=True, exist_ok=True)

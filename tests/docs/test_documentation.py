@@ -5,7 +5,6 @@ import pytest
 
 from app.config import Settings
 
-
 ROOT = Path(__file__).parents[2]
 
 
@@ -32,7 +31,11 @@ def test_local_markdown_links_resolve_portably():
 def test_env_example_lists_all_settings_aliases():
     expected = {field.alias or name.upper() for name, field in Settings.model_fields.items()}
     example = ROOT / ".env.example"
-    keys = {line.split("=", maxsplit=1)[0].strip() for line in example.read_text(encoding="utf-8").splitlines() if line.strip() and not line.lstrip().startswith("#")}
+    keys = {
+        line.split("=", maxsplit=1)[0].strip()
+        for line in example.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
     assert keys == expected
 
 

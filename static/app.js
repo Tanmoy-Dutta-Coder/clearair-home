@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     detectionStatus.textContent = "Fetching modelled air quality estimates...";
     detectionStatus.classList.remove("hidden");
 
+    const coldStartTimer = startColdStartTimer();
     try {
       const resp = await fetch("/api/aqi?place=" + encodeURIComponent(loc));
       if (resp.ok) {
@@ -84,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       detectionStatus.className = "detection-feedback error";
       detectionStatus.textContent = "⚠️ Couldn't detect AQI, please enter it manually.";
     } finally {
+      clearColdStartTimer(coldStartTimer);
       detectAqiBtn.disabled = false;
       detectAqiBtn.textContent = originalText;
     }
@@ -100,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       navigator.geolocation.getCurrentPosition(
         async (position) => {
+          const coldStartTimer = startColdStartTimer();
           try {
             // Round coordinates to 2 decimal places (~1 km grid) for privacy
             const lat = Math.round(position.coords.latitude * 100) / 100;
@@ -124,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
             detectionStatus.className = "detection-feedback error";
             detectionStatus.textContent = "⚠️ Couldn't fetch air quality for your area. Please enter your AQI manually.";
           } finally {
+            clearColdStartTimer(coldStartTimer);
             useLocationBtn.disabled = false;
           }
         },
@@ -156,6 +160,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Helper: Display errors cleanly and link with ARIA
+  const WAKE_UP_MESSAGE = "Waking up the server, this can take up to a minute...";
+
+  function startColdStartTimer() {
+    return setTimeout(() => {
+      detectionStatus.className = "detection-feedback";
+      detectionStatus.textContent = WAKE_UP_MESSAGE;
+      detectionStatus.classList.remove("hidden");
+    }, 5000);
+  }
+
+  function clearColdStartTimer(timerId) {
+    clearTimeout(timerId);
+    if (detectionStatus.textContent === WAKE_UP_MESSAGE) {
+      detectionStatus.classList.add("hidden");
+    }
+  }
+
   function showError(message) {
     while (errorBox.firstChild) {
       errorBox.removeChild(errorBox.firstChild);
@@ -322,6 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.disabled = true;
     const originalBtnText = submitBtn.textContent;
     submitBtn.textContent = "Analyzing & Personalizing Plan...";
+    const coldStartTimer = startColdStartTimer();
 
     try {
       const response = await fetch("/api/plan", {
@@ -386,6 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (networkErr) {
       showError("Connection failed: Could not reach the ClearAir service. Please check your network and try again.");
     } finally {
+      clearColdStartTimer(coldStartTimer);
       submitBtn.disabled = false;
       submitBtn.textContent = originalBtnText;
     }
