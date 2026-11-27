@@ -10,6 +10,7 @@ import math
 import re
 import threading
 import time
+from collections.abc import Sequence
 from typing import Any
 from urllib.parse import urlparse
 
@@ -60,7 +61,7 @@ class AqiUnavailable(Exception):
     """Raised when AQI cannot be fetched, geocoded, or calculated."""
 
 
-def _calculate_sub_index(conc: float, breakpoints: list[tuple[float, float, float, float]]) -> float:
+def _calculate_sub_index(conc: float, breakpoints: Sequence[tuple[float, float, int, int]]) -> float:
     """Linearly interpolate sub-index for a pollutant concentration."""
     if not math.isfinite(conc) or conc < 0:
         raise ValueError("Pollutant concentration must be a finite non-negative number")
