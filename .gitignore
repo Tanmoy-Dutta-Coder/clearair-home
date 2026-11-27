@@ -33,3 +33,6 @@ trace.zip
 # Operating system files
 .DS_Store
 Thumbs.db
+Microsoft/
+.vscode/
+.venv-ci-baseline/
