@@ -70,6 +70,16 @@ def _get_genai_client() -> genai.Client | None:
     )
 
 
+def _generate_content(client: genai.Client, prompt: str, config: types.GenerateContentConfig) -> str | None:
+    """Call the untyped SDK and expose only a checked string response."""
+    response = client.models.generate_content(
+        model=settings.gemini_model,
+        contents=prompt,
+        config=config,
+    )
+    return response.text if isinstance(response.text, str) else None
+
+
 def personalise_plan(request: PlanRequest, baseline_plan: PlanResponse) -> PlanResponse:
     """Personalise a baseline plan using Gemini, with graceful fallback.
 
@@ -96,13 +106,7 @@ def personalise_plan(request: PlanRequest, baseline_plan: PlanResponse) -> PlanR
             temperature=0.3,
         )
 
-        response = client.models.generate_content(
-            model=settings.gemini_model,
-            contents=prompt,
-            config=config,
-        )
-
-        raw_text = response.text
+        raw_text = _generate_content(client, prompt, config)
         if not raw_text:
             logger.warning("Gemini returned empty response; falling back to baseline.")
             return baseline_plan.model_copy(update={"used_ai": False})

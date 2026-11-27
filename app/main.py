@@ -8,6 +8,7 @@ import logging
 import re
 import time
 from collections import defaultdict, deque
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from app.aqi_provider import AqiUnavailable, detect_aqi, detect_aqi_by_coords
 from app.config import settings
@@ -49,8 +51,7 @@ class SecurityAndRateLimitMiddleware:
 
     def __init__(
         self,
-        # pyrefly: ignore[implicit-any-parameter]
-        app,
+        app: ASGIApp,
         max_requests: int = RATE_LIMIT_REQUESTS,
         window_seconds: float = RATE_LIMIT_WINDOW_SECS,
         trusted_proxy_ips: frozenset[str] = frozenset(),
@@ -63,8 +64,7 @@ class SecurityAndRateLimitMiddleware:
         self.max_tracked_ips = max_tracked_ips
         self.ip_records: dict[str, deque[float]] = defaultdict(deque)
 
-    # pyrefly: ignore[implicit-any-parameter]
-    async def __call__(self, scope, receive, send) -> Any:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
@@ -121,8 +121,7 @@ class SecurityAndRateLimitMiddleware:
         timestamps.append(now)
 
         # 3. Security headers on response start
-        # pyrefly: ignore[implicit-any-parameter, unannotated-return]
-        async def send_with_security_headers(message):
+        async def send_with_security_headers(message: Message) -> None:
             if message["type"] == "http.response.start":
                 res_headers = list(message.get("headers", []))
                 res_headers.extend(
@@ -144,7 +143,7 @@ class SecurityAndRateLimitMiddleware:
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Lifecycle manager logging startup status without sensitive data."""
     ai_enabled = bool(settings.gemini_api_key and settings.gemini_api_key.strip())
     logger.info("Application startup: version=%s ai_enabled=%s", APP_VERSION, ai_enabled)
@@ -173,8 +172,7 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Validation Error Handler: Clear 422 messages without leaking internals
 @app.exception_handler(RequestValidationError)
-# pyrefly: ignore[unannotated-return]
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     errors = []
     for error in exc.errors():
         field = " -> ".join(str(loc) for loc in error.get("loc", []) if loc != "body")
@@ -192,8 +190,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 # Unhandled Exception Handler: Prevents stack trace disclosure in responses
 @app.exception_handler(Exception)
-# pyrefly: ignore[unannotated-return]
-async def unhandled_exception_handler(request: Request, exc: Exception):
+async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     logger.exception("Internal error occurred: %s", type(exc).__name__)
     return JSONResponse(
         status_code=500,
@@ -202,9 +199,8 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 
 # Route Handlers
-@app.get("/", response_class=FileResponse)
-# pyrefly: ignore[unannotated-return]
-async def get_root():
+@app.get("/", response_class=FileResponse, response_model=None)
+async def get_root() -> FileResponse | JSONResponse:
     """Serve the single-page application dashboard."""
     index_file = STATIC_DIR / "index.html"
     if not index_file.exists():
@@ -213,15 +209,13 @@ async def get_root():
 
 
 @app.get("/healthz")
-# pyrefly: ignore[unannotated-return]
-async def healthz():
+async def healthz() -> dict[str, str]:
     """Readiness and liveness probe for Cloud Run."""
     return {"status": "ok"}
 
 
-@app.get("/api/aqi")
-# pyrefly: ignore[unannotated-return]
-async def get_aqi_detection(place: str = Query(..., min_length=2, max_length=80)):
+@app.get("/api/aqi", response_model=None)
+async def get_aqi_detection(place: str = Query(..., min_length=2, max_length=80)) -> dict[str, Any] | JSONResponse:
     """Auto-detect current AQI from Open-Meteo with fallback to 503 on unavailability."""
     clean_place = place.strip()
     if not PLACE_REGEX.match(clean_place):
@@ -240,9 +234,10 @@ async def get_aqi_detection(place: str = Query(..., min_length=2, max_length=80)
         )
 
 
-@app.get("/api/aqi/coords")
-# pyrefly: ignore[unannotated-return]
-async def get_aqi_by_coords(query: CoordsQuery = Depends()):  # noqa: B008 - standard FastAPI dependency pattern
+@app.get("/api/aqi/coords", response_model=None)
+async def get_aqi_by_coords(
+    query: CoordsQuery = Depends(),  # noqa: B008 - standard FastAPI dependency pattern
+) -> dict[str, Any] | JSONResponse:
     """Auto-detect current AQI near approximate coordinates.
 
     Coordinates are rounded to 2 decimals (~1 km grid) and never logged.

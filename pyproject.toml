@@ -28,6 +28,12 @@ fail_under = 90
 [tool.mypy]
 strict = true
 files = ["app"]
+python_version = "3.12"
+
+# google-genai does not provide type information; calls are isolated behind a checked wrapper.
+[[tool.mypy.overrides]]
+module = ["google", "google.*"]
+ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 120
